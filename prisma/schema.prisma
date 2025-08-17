@@ -1,57 +1,73 @@
-// Prisma schema for plataformaHR
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model Department {
-  id    Int    @id @default(autoincrement())
-  name  String
-  employees Employee[]
-}
-
-model Employee {
-  id            Int       @id @default(autoincrement())
-  fullName      String
-  cedula        String    @unique
-  dateOfHire    DateTime
-  dateOfBirth   DateTime
-  departmentId  Int?
-  department    Department? @relation(fields: [departmentId], references: [id])
-  loans         Loan[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model Loan {
-  id               Int       @id @default(autoincrement())
-  employeeId       Int
-  employee         Employee  @relation(fields: [employeeId], references: [id])
-  principal        Float
-  annualRate       Float
-  method           String
-  totalInstallments Int
-  installments     LoanInstallment[]
-  createdAt        DateTime @default(now())
-}
-
-model LoanInstallment {
-  id         Int      @id @default(autoincrement())
-  loanId     Int
-  loan       Loan     @relation(fields: [loanId], references: [id])
-  number     Int
-  capital    Float
-  interest   Float
-  total      Float
-  paid       Boolean @default(false)
-}
-
-model Config {
-  id    Int    @id @default(1)
-  data  Json
-}
+diff --git a/prisma/schema.prisma b/prisma/schema.prisma
+index 3a23463322278e3d7260bb90c71f260b98ff8ac1..760bf2ed3f13bf8b1d3e5b788cc489ea4a0391d6 100644
+--- a/prisma/schema.prisma
++++ b/prisma/schema.prisma
+@@ -1,57 +1,67 @@
+ // Prisma schema for plataformaHR
+ 
+ generator client {
+   provider = "prisma-client-js"
+ }
+ 
+ datasource db {
+-  provider = "postgresql"
++  provider = "sqlite"
+   url      = env("DATABASE_URL")
+ }
+ 
+ model Department {
+   id    Int    @id @default(autoincrement())
+   name  String
+   employees Employee[]
+ }
+ 
+ model Employee {
+   id            Int       @id @default(autoincrement())
+   fullName      String
+   cedula        String    @unique
+   dateOfHire    DateTime
+   dateOfBirth   DateTime
+   departmentId  Int?
+   department    Department? @relation(fields: [departmentId], references: [id])
+   loans         Loan[]
++  attendances  Attendance[]
+   createdAt     DateTime @default(now())
+   updatedAt     DateTime @updatedAt
+ }
+ 
+ model Loan {
+   id               Int       @id @default(autoincrement())
+   employeeId       Int
+   employee         Employee  @relation(fields: [employeeId], references: [id])
+   principal        Float
+   annualRate       Float
+   method           String
+   totalInstallments Int
+   installments     LoanInstallment[]
+   createdAt        DateTime @default(now())
+ }
+ 
+ model LoanInstallment {
+   id         Int      @id @default(autoincrement())
+   loanId     Int
+   loan       Loan     @relation(fields: [loanId], references: [id])
+   number     Int
+   capital    Float
+   interest   Float
+   total      Float
+   paid       Boolean @default(false)
+ }
+ 
+ model Config {
+   id    Int    @id @default(1)
+   data  Json
+ }
++
++model Attendance {
++  id         Int      @id @default(autoincrement())
++  employeeId Int
++  employee   Employee @relation(fields: [employeeId], references: [id])
++  timestamp  DateTime
++  type       String
++  createdAt  DateTime @default(now())
++}
