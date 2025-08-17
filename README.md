@@ -27,6 +27,8 @@ npm run migrate
 npm run seed
 ```
 
+The scripts set `PRISMA_ENGINES_CHECKSUM_IGNORE=1` and `PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1` to bypass Prisma engine checksum validation, avoiding 403 errors in restricted environments.
+
 ## Tests
 
 ```bash
